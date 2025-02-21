@@ -4,11 +4,11 @@ A modern web application for tracking daily mobility routines and exercises. Bui
 
 ## Features
 
-- 🏃‍♂️ Curated mobility routines targeting different body areas
-- 📅 Daily progress tracking with visual calendar
-- ✅ Mark completion status for each day
-- 🎯 Focus on specific body parts with dedicated routines
-- 💪 Track your consistency over time
+- Curated mobility routines targeting different body areas 🏃‍♂️
+- Daily progress tracking with visual calendar 📅
+- Mark completion status for each day ✅
+- Focus on specific body parts with dedicated routines 🎯
+- Track your consistency over time 💪
 
 ## Tech Stack
 
