@@ -21,7 +21,7 @@ export class MemStorage implements IStorage {
 
   async addCompletion(insertCompletion: InsertCompletion): Promise<Completion> {
     const id = this.currentId++;
-    const completion: Completion = { ...insertCompletion, id };
+    const completion: Completion = { ...insertCompletion, id, completed: insertCompletion.completed ?? false };
     this.completions.set(completion.date.toISOString(), completion);
     return completion;
   }
