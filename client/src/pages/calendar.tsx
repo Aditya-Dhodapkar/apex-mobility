@@ -77,3 +77,53 @@ export default function Calendar() {
     </div>
   );
 }
+
+const fetchCompletionsForMonth = async (month: number, year: number) => {
+  try {
+    const res = await apiRequest("GET", `/api/completions?month=${month}&year=${year}`);
+    const data = await res.json();
+    return new Map(data.map((c: Completion) => [c.date, c.completed]));
+  } catch (error) {
+    toast({
+      title: "Error",
+      description: "Failed to load completion data",
+      variant: "destructive"
+    });
+    return new Map();
+  }
+};
+
+
+const toggleCompletion = async (date: Date) => {
+  try {
+    const response = await apiRequest("POST", "/api/completions/toggle", { date });
+    const updatedCompletion = await response.json();
+    if (!response.ok) {
+      throw new Error("Failed to update completion status");
+    }
+    queryClient.setQueryData(["/api/completions"], (oldData: Completion[]) => {
+      const updatedData = oldData.map((c) =>
+        c.date === updatedCompletion.date ? updatedCompletion : c
+      );
+      return updatedData;
+    });
+
+    toast({
+      title: "Success",
+      description: `Completion status updated for ${date.toDateString()}`,
+      variant: "success"
+    });
+  } catch (error) {
+    toast({
+      title: "Error",
+      description: "Failed to update completion status",
+      variant: "destructive"
+    });
+  }
+};
+
+const today = new Date();
+const { data: completionMap } = useQuery({
+  queryKey: [`/api/completions/${today.getMonth() + 1}/${today.getFullYear()}`],
+  queryFn: () => fetchCompletionsForMonth(today.getMonth() + 1, today.getFullYear())
+});
