@@ -56,6 +56,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/users/:id", async (req, res) => {
     const userId = Number(req.params.id);
     if (isNaN(userId)) {
+      
       return res.status(400).json({ message: "Invalid user ID" });
     }
 

@@ -53,4 +53,41 @@ const AccordionContent = React.forwardRef<
 
 AccordionContent.displayName = AccordionPrimitive.Content.displayName
 
-export { Accordion, AccordionItem, AccordionTrigger, AccordionContent }
+const AccordionSingle = ({ children, ...props }: React.ComponentPropsWithoutRef<typeof Accordion>) => (
+  <Accordion type="single" collapsible {...props}>
+    {children}
+  </Accordion>
+)
+
+const AccordionType = ({
+  type = "multiple",
+  children,
+  ...props
+}: { type?: "single" | "multiple" } & React.ComponentPropsWithoutRef<typeof Accordion>) => (
+  <Accordion type={type} {...props}>
+    {children}
+  </Accordion>
+)
+
+const AccordionHeaderText = ({ text }: { text: string }) => (
+  <h2 className="text-lg font-semibold text-gray-800">{text}</h2>
+)
+
+const AccordionGroupWrapper = ({
+  children,
+  className,
+}: {
+  children: React.ReactNode
+  className?: string
+}) => <div className={cn("space-y-2", className)}>{children}</div>
+
+export {
+  Accordion,
+  AccordionItem,
+  AccordionTrigger,
+  AccordionContent,
+  AccordionSingle,
+  AccordionType,
+  AccordionHeaderText,
+  AccordionGroupWrapper,
+}
