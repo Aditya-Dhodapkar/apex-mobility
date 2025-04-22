@@ -5,6 +5,7 @@ import { useToast } from "@/hooks/use-toast";
 import { type Completion } from "@shared/schema";
 import { Check, X } from "lucide-react";
 
+
 export default function Calendar() {
   const { toast } = useToast();
 
@@ -127,3 +128,79 @@ const { data: completionMap } = useQuery({
   queryKey: [`/api/completions/${today.getMonth() + 1}/${today.getFullYear()}`],
   queryFn: () => fetchCompletionsForMonth(today.getMonth() + 1, today.getFullYear())
 });
+
+import { useState } from "react";
+import { routines } from "@shared/schema";
+
+type RoutineStats = {
+  routineId: string;
+  completedCount: number;
+};
+
+const mockRoutineHistory: { date: string; routineId: string }[] = [
+  { date: "2025-04-01", routineId: "A" },
+  { date: "2025-04-01", routineId: "C" },
+  { date: "2025-04-02", routineId: "B" },
+  { date: "2025-04-03", routineId: "C" },
+  { date: "2025-04-03", routineId: "A" },
+  { date: "2025-04-04", routineId: "B" },
+  { date: "2025-04-04", routineId: "C" },
+  { date: "2025-04-05", routineId: "D" }
+];
+
+const getRoutineSummary = () => {
+  const summaryMap = new Map<string, number>();
+  mockRoutineHistory.forEach((entry) => {
+    summaryMap.set(
+      entry.routineId,
+      (summaryMap.get(entry.routineId) ?? 0) + 1
+    );
+  });
+
+  return Array.from(summaryMap.entries()).map(([routineId, completedCount]) => ({
+    routineId,
+    completedCount
+  }));
+};
+
+const RoutineSummary = () => {
+  const [filter, setFilter] = useState<string | null>(null);
+  const stats = getRoutineSummary();
+
+  const filteredStats = filter
+    ? stats.filter((stat) => stat.routineId === filter)
+    : stats;
+
+  return (
+    <div className="mt-12 space-y-4">
+      <h2 className="text-xl font-semibold">Routine Completion Summary</h2>
+      <div className="flex flex-wrap gap-2">
+        <button onClick={() => setFilter(null)} className="px-3 py-1 border rounded">
+          All
+        </button>
+        {routines.map((r) => (
+          <button
+            key={r.id}
+            onClick={() => setFilter(r.id)}
+            className={`px-3 py-1 border rounded ${
+              filter === r.id ? "bg-primary text-white" : ""
+            }`}
+          >
+            {r.name}
+          </button>
+        ))}
+      </div>
+
+      <ul className="list-disc pl-6">
+        {filteredStats.map((stat) => {
+          const routine = routines.find((r) => r.id === stat.routineId);
+          return (
+            <li key={stat.routineId}>
+              {routine?.name}: {stat.completedCount} completions
+            </li>
+          );
+        })}
+      </ul>
+    </div>
+  );
+};
