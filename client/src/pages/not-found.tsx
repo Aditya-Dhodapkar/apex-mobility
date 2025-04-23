@@ -6,6 +6,8 @@ import { AlertCircle, Home, Moon, Sun } from "lucide-react";
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 
+import confetti from "canvas-confetti";
+
 export default function NotFound() {
   return (
     <div className="min-h-screen w-full flex items-center justify-center bg-gray-50">
@@ -74,3 +76,55 @@ export default function NotFound() {
     </div>
   );
 }
+\
+
+useEffect(() => {
+  const timeout = setTimeout(() => {
+    confetti({
+      particleCount: 100,
+      spread: 70,
+      origin: { y: 0.6 },
+    });
+  }, 2000);
+
+  return () => clearTimeout(timeout);
+}, []);
+
+const [showModal, setShowModal] = useState(false);
+
+useEffect(() => {
+  const modalTimeout = setTimeout(() => {
+    setShowModal(true);
+  }, 4000);
+  return () => clearTimeout(modalTimeout);
+}, []);
+
+return (
+  <>
+    {/* Your original JSX remains here */}
+
+    {showModal && (
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.3 }}
+          className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg max-w-sm w-full"
+        >
+          <h2 className="text-xl font-bold mb-2">Looks like you're lost!</h2>
+          <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">
+            This page doesn't exist — but hey, enjoy some confetti while you're here 🎉
+          </p>
+          <div className="flex justify-end">
+            <button
+              onClick={() => setShowModal(false)}
+              className="px-4 py-2 text-sm font-medium bg-blue-600 text-white rounded-md hover:bg-blue-700"
+            >
+              Close
+            </button>
+          </div>
+        </motion.div>
+      </div>
+    )}
+  </>
+);
